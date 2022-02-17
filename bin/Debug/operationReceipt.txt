@@ -1,0 +1,4 @@
+Bank
+2022-02-15T22:49:32
+All operations done:
+Date			Operation Type	Account Number	 Account Type	Previous Balance	Current Balance/Available Credit	Amount

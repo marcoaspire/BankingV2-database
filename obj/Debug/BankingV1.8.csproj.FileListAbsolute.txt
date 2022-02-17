@@ -1,0 +1,7 @@
+C:\Users\marco.antonio\OneDrive - Aspire Systems (India) Private Limited\Documents\repos\banking\BankingV1.8\obj\Debug\BankingV1.8.csproj.AssemblyReference.cache
+C:\Users\marco.antonio\OneDrive - Aspire Systems (India) Private Limited\Documents\repos\banking\BankingV1.8\obj\Debug\BankingV1.8.csproj.CoreCompileInputs.cache
+C:\Users\marco.antonio\OneDrive - Aspire Systems (India) Private Limited\Documents\repos\banking\BankingV1.8\bin\Debug\BankingV1.8.exe.config
+C:\Users\marco.antonio\OneDrive - Aspire Systems (India) Private Limited\Documents\repos\banking\BankingV1.8\bin\Debug\BankingV1.8.exe
+C:\Users\marco.antonio\OneDrive - Aspire Systems (India) Private Limited\Documents\repos\banking\BankingV1.8\bin\Debug\BankingV1.8.pdb
+C:\Users\marco.antonio\OneDrive - Aspire Systems (India) Private Limited\Documents\repos\banking\BankingV1.8\obj\Debug\BankingV1.8.exe
+C:\Users\marco.antonio\OneDrive - Aspire Systems (India) Private Limited\Documents\repos\banking\BankingV1.8\obj\Debug\BankingV1.8.pdb
