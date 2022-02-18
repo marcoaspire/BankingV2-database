@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Configuration;
 
 namespace BankingV1._8.Account
 {
@@ -17,7 +18,8 @@ namespace BankingV1._8.Account
         {
             try
             {
-                string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+                string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
+                //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
                 SqlConnection connection = new SqlConnection(connectionString);
 
                 /*
@@ -25,7 +27,7 @@ namespace BankingV1._8.Account
                     "(AccountNumber,AccountAlias,AccountType,Balance,UserID,Interest,CreditLimit,DepositLimit,CreatedAt)" +
                    " values(@number,@alias,@type,@balance,@userID,@interest,@creditLimit,@depositLimit,@createdAt)", connection);
                 */
-                SqlCommand cmd = new SqlCommand("insertAccount", connection);
+                SqlCommand cmd = new SqlCommand("sp_insertaccount", connection);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddRange(parameters);
                 connection.Open();
@@ -44,9 +46,10 @@ namespace BankingV1._8.Account
         public DataSet GetAllAccountsFromDB()
         {
             DataSet ds = new DataSet();
-            string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
             SqlConnection connection = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("select * from account", connection);
+            SqlCommand cmd = new SqlCommand("select * from tbl_Account", connection);
             SqlDataAdapter adapter = new SqlDataAdapter(cmd);
             connection.Open();
             adapter.Fill(ds);
@@ -58,9 +61,10 @@ namespace BankingV1._8.Account
         public DataSet SearchAccountByUser(SqlParameter parameter)
         {
             DataSet ds = new DataSet();
-            string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
             SqlConnection connection = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("select * from account where userId = @userID", connection);
+            SqlCommand cmd = new SqlCommand("select * from tbl_Account where userId = @userID", connection);
             cmd.Parameters.Add(parameter);
             SqlDataAdapter adapter = new SqlDataAdapter(cmd);
             connection.Open();
@@ -71,9 +75,10 @@ namespace BankingV1._8.Account
         public DataSet SearchAccountByNumber(SqlParameter[] parameters)
         {
             DataSet ds = new DataSet();
-            string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
             SqlConnection connection = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("select * from account where userId = @userID and AccountNumber=@accountNumber", connection);
+            SqlCommand cmd = new SqlCommand("select * from tbl_Account where userId = @userID and AccountID=@accountID", connection);
             cmd.Parameters.AddRange(parameters);
             SqlDataAdapter adapter = new SqlDataAdapter(cmd);
             connection.Open();
@@ -86,15 +91,16 @@ namespace BankingV1._8.Account
         {
             //try
             //{
-                string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
-                SqlConnection connection = new SqlConnection(connectionString);
+            string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
+            //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            SqlConnection connection = new SqlConnection(connectionString);
 
             /*
                 SqlCommand cmd = new SqlCommand("UPDATE account set " +
                     "AccountNumber=@number,AccountAlias=@alias,Balance=@balance,Interest=@interest," +
                     "CreditLimit=@creditLimit,DepositLimit=@depositLimit where UserID=@userID and AccountID=@accountID", connection);
             */
-            SqlCommand cmd = new SqlCommand("updateAccount", connection);
+            SqlCommand cmd = new SqlCommand("sp_updateaccount", connection);
             cmd.CommandType = CommandType.StoredProcedure;
             
 
@@ -114,18 +120,20 @@ namespace BankingV1._8.Account
             //    Console.WriteLine(ex.Message);
             //}
 
-            return false;
+            //return false;
         }
 
-        public bool Delete(SqlParameter[] parameters)
+        public bool Destroy(SqlParameter[] parameters)
         {
             //try
             //{
-            string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
             SqlConnection connection = new SqlConnection(connectionString);
 
-            SqlCommand cmd = new SqlCommand("DELETE from account where UserID=@userID and AccountID=@accountID", connection);
-
+            //SqlCommand cmd = new SqlCommand("DELETE from account where UserID=@userID and AccountID=@accountID", connection);
+            SqlCommand cmd = new SqlCommand("sp_deleteaccount", connection);
+            cmd.CommandType = CommandType.StoredProcedure;
             cmd.Parameters.AddRange(parameters);
             connection.Open();
             int res = cmd.ExecuteNonQuery();//INSERT, DELETE, UPDATE, and SET
@@ -140,7 +148,7 @@ namespace BankingV1._8.Account
             //    Console.WriteLine(ex.Message);
             //}
 
-            return false;
+            //return false;
         }
 
     }

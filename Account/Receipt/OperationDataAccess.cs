@@ -2,6 +2,7 @@
 using BankingV1._8.UserFolder;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -17,12 +18,13 @@ namespace BankingV1._8.Account.Receipt
         {
             try
             {
-                string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+                //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+                string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
                 SqlConnection connection = new SqlConnection(connectionString);
 
                 //SqlCommand cmd = new SqlCommand("insert into operation(OperationType,Amount,CurrentBalance,PreviousBalance,userID,OperationDate)" +
                 //    " values(@operationType,@amount,@currentBalance,@previousBalance,@userID,@operationDate)", connection);
-                SqlCommand cmd = new SqlCommand("insertOperation", connection);
+                SqlCommand cmd = new SqlCommand("sp_insertOperation", connection);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddRange(parameters);
                 connection.Open();
@@ -43,11 +45,11 @@ namespace BankingV1._8.Account.Receipt
             try
             {
                 DataSet ds = new DataSet();
-                string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+                string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
                 // Create and initialize the connection using connection string
                 SqlConnection connection = new SqlConnection(connectionString);
                 //Define Command Type
-                SqlCommand cmd = new SqlCommand("select * from Operation " +
+                SqlCommand cmd = new SqlCommand("select * from tbl_Operation " +
                     "where email = @email and password = @password", connection);
                 cmd.Parameters.AddRange(parameters);
                 // Execute the command
@@ -81,11 +83,11 @@ namespace BankingV1._8.Account.Receipt
             try
             {
                 DataSet ds = new DataSet();
-                string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+                string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
                 // Create and initialize the connection using connection string
                 SqlConnection connection = new SqlConnection(connectionString);
                 //Define Command Type
-                SqlCommand cmd = new SqlCommand("select * from [user] " +
+                SqlCommand cmd = new SqlCommand("select * from [tbl_User] " +
                     "where UserID=@userID", connection);
                 cmd.Parameters.Add(parameter);
                 // Execute the command

@@ -17,7 +17,6 @@ namespace BankingV1._8.Menu
     {
         //it´s like a session variable
         public static int userID; //change to User class
-        //public static string email_session; //DELETE
         //Session["UserID"];
 
 
@@ -109,10 +108,11 @@ namespace BankingV1._8.Menu
                 Console.WriteLine("\nLogin");
                 Console.WriteLine("Email");
                 email = Console.ReadLine();
-                Console.WriteLine("\nPassword");
-                password = Console.ReadLine();
-                //try
-                //{
+                try
+                {
+                    email = new MailAddress(email).Address;
+                    Console.WriteLine("\nPassword");
+                    password = Console.ReadLine();
                     //search in DB
                     UserBO usBO = new UserBO();
                     User u = new User(email, password);
@@ -121,14 +121,24 @@ namespace BankingV1._8.Menu
                     {
                         Console.WriteLine(userValidated.UserID);
                         verification = true;
-                        //FileBO.DataLoad();
                         DisplayMenu();
-                }
+                    }
                     else
                     {
                         Console.WriteLine("Incorrect email address or password. Please try again.");
-                    
+
                     }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Email format is invalid");
+                   
+                }
+
+                
+                //try
+                //{
+                    
                 //}
                 //catch (ArgumentException)
                 //{
@@ -485,18 +495,17 @@ namespace BankingV1._8.Menu
                                         creditBO.UpdateAlias(account);
                                     }
                                     else
-                                        creditBO.RemoveAccount(account);
+                                        creditBO.DeleteAccount(account);
                                 }
                                 else if (type.Equals("Current account"))
                                 {
                                     Current account = (Current)accoutFound;
                                     if (choice == 1)
                                     {
-                                        Console.WriteLine("modificar");
                                         currentBO.UpdateAlias(account);
                                     }
                                     else
-                                        currentBO.RemoveAccount(account);
+                                        currentBO.DeleteAccount(account);
                                 }
                                 else if (type.Equals("Saving account"))
                                 {
@@ -504,7 +513,7 @@ namespace BankingV1._8.Menu
                                     if (choice == 1)
                                         savingBO.UpdateAlias(account);
                                     else
-                                        savingBO.RemoveAccount(account);
+                                        savingBO.DeleteAccount(account);
                                 }
                             }
                             catch (InvalidCastException)
@@ -523,6 +532,7 @@ namespace BankingV1._8.Menu
                         break;
                     case '8':
                         Console.WriteLine("Thank you for using this system");
+                        userID = -1;
                         //new OperationBO().PrintOperations();
                         //FileBO.SaveData();
                         LoginMenu();

@@ -16,7 +16,7 @@ namespace BankingV1._8.Account
     abstract class AccountBO : IAccountBO
     {
         //Methods
-        public void UpdateAlias(Account a)
+        public void UpdateAlias(Account account)
         {
             String alias;
             do
@@ -26,8 +26,9 @@ namespace BankingV1._8.Account
                 if (string.IsNullOrEmpty(alias))
                     Console.WriteLine("Error:Name can not be empty");
             } while (string.IsNullOrEmpty(alias));
-            a.AccountAlias = alias;
-            this.UpdateAccount(a);
+            account.AccountAlias = alias;
+
+            this.UpdateAccount(account, new Operation("Modify alias", account, 0));
         }
         public virtual void Deposit(Account account)
         {
@@ -38,10 +39,11 @@ namespace BankingV1._8.Account
                 Console.WriteLine("Type the amount you want to deposit");
                 validDeposit = float.TryParse(Console.ReadLine(), out deposit);
             } while (!validDeposit || deposit < 0);
-            float previo = account.Balance;
+            float previous = account.Balance;
+            Operation operation = new Operation("Deposit", account, deposit);
             account.Balance += deposit;
             //OperationBO.operations.Add(DateTime.Now, new Operation("Deposit", (Account)account.Value.Clone(), accountAuxiliary.Balance, deposit));
-            this.UpdateAccount(account);
+            this.UpdateAccount(account, operation);
             Console.WriteLine($"Now your balance is ${account.Balance}");
             //return account;
         }
@@ -62,9 +64,11 @@ namespace BankingV1._8.Account
             else
             {
                 //Account auxiliar = (Account)account.Value.Clone();
+                float previous = account.Balance;
+                Operation operation = new Operation("Withdrawal", account,withdrawal);
                 account.Balance -= withdrawal;
                 //OperationBO.operations.Add(DateTime.Now, new Operation("Withdraw", (Account)account.Value.Clone(), auxiliar.Balance, withdrawal));
-                this.UpdateAccount(account);
+                this.UpdateAccount(account, operation);
                 
                 Console.WriteLine($"Now your balance is ${account.Balance}");
 
@@ -100,11 +104,11 @@ namespace BankingV1._8.Account
 
             return FindAccount(accountNumber);
         }
-        public static Account FindAccount(long accountNumber)
+        public static Account FindAccount(long accountID)
         {
             SqlParameter[] parameters = new SqlParameter[2];
             parameters[0] = new SqlParameter("@userID", BankMenu.userID);
-            parameters[1] = new SqlParameter("@accountNumber", accountNumber);
+            parameters[1] = new SqlParameter("@accountID", accountID);
             DataSet res = new AccountDataAccess().SearchAccountByNumber(parameters);
             DataRow acc;
             Account account =null;
@@ -115,15 +119,15 @@ namespace BankingV1._8.Account
                 switch (Convert.ToInt32(acc["AccountType"]))
                 {
                     case 1:
-                        account = new Current(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(), Convert.ToInt64(acc["AccountNumber"].ToString()),
+                        account = new Current(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(), 
                             "Current account", float.Parse(acc["Balance"].ToString()), float.Parse(acc["DepositLimit"].ToString()));
                         break;
                     case 2:
-                        account = new Saving(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(), Convert.ToInt64(acc["AccountNumber"].ToString()),
+                        account = new Saving(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(),
                             "Saving account", float.Parse(acc["Balance"].ToString()), float.Parse(acc["Interest"].ToString()));
                         break;
                     case 3:
-                        account = new Credit(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(), Convert.ToInt64(acc["AccountNumber"].ToString()),
+                        account = new Credit(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(),
                             "Credit account", float.Parse(acc["Balance"].ToString()) , float.Parse(acc["CreditLimit"].ToString()), float.Parse(acc["Interest"].ToString()));
                         break;
                     default:
@@ -151,7 +155,7 @@ namespace BankingV1._8.Account
         //interface methods
         public abstract Account NewAccount();
 
-        public virtual void RemoveAccount(Account a)
+        public virtual void DeleteAccount(Account a)
         {
             if (a.Balance != 0)
                 Console.WriteLine("You need to withdraw all your money before to delete");
@@ -163,17 +167,17 @@ namespace BankingV1._8.Account
                 parameters[1] = new SqlParameter("@accountID", a.AccountID);
 
 
-                bool res = new AccountDataAccess().Delete(parameters);
+                bool res = new AccountDataAccess().Destroy(parameters);
 
                 if (res)
-                    Console.WriteLine("Account deleted");
+                    Console.WriteLine("\nAccount deleted");
                 else
                     Console.WriteLine("Error, we could not delete your account");
 
             }
         }
 
-        public abstract void UpdateAccount(Account a);
+        public abstract void UpdateAccount(Account a, Operation operation);
 
         public abstract bool AddAccount(Account u, Operation operation);
 
@@ -189,7 +193,7 @@ namespace BankingV1._8.Account
                 foreach (DataRow account in res.Tables[0].Rows)
                 {
                     //TODO: CHANGE 
-                    Console.WriteLine("{0} {1} {2} {3}",account["AccountNumber"], account["AccountAlias"], 
+                    Console.WriteLine("{0} {1} {2} {3}",account["AccountID"], account["AccountAlias"], 
                         account["Balance"], account["AccountType"]);
                 }
             else

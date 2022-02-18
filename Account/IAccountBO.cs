@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BankingV1._8.Account.Receipt;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,8 @@ namespace BankingV1._8.Account
     interface IAccountBO
     {
         Account NewAccount();
-        void RemoveAccount(Account a);
-        void UpdateAccount(Account a);
+        void DeleteAccount(Account a);
+        void UpdateAccount(Account a, Operation operation);
 
     }
 }

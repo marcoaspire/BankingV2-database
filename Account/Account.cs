@@ -25,9 +25,8 @@ namespace BankingV1._8.Account
             this.createdAt = DateTime.Now;
             this.userID = userID;
         }
-        public Account(int accountID,int userID, string accountName, long accountNumber, string accountType, float balance)
+        public Account(int accountID,int userID, string accountName, string accountType, float balance)
         {
-            AccountNumber = accountNumber;
             AccountAlias = accountName;
             AccountType = accountType;
             Balance = balance;
@@ -35,9 +34,8 @@ namespace BankingV1._8.Account
             this.userID = userID;
             this.accountID = accountID;
         }
-        public Account(int userID, string accountName, long accountNumber, string accountType, float balance)
+        public Account(int userID, string accountName, string accountType, float balance)
         {
-            AccountNumber = accountNumber;
             AccountAlias = accountName;
             AccountType = accountType;
             Balance = balance;
@@ -47,7 +45,7 @@ namespace BankingV1._8.Account
         
 
         //Properties 
-        public long AccountNumber { get => accountNumber; set => accountNumber = value; }
+        //public long AccountNumber { get => accountNumber; set => accountNumber = value; }
         public string AccountAlias { get => accountAlias; set => accountAlias = value; }
         public string AccountType { get => accountType; set => accountType = value; }
         public float Balance { get => balance; set => balance = value; }
@@ -67,7 +65,7 @@ namespace BankingV1._8.Account
         public override string ToString()
         {
             return String.Format($"-Hello dear user, your " +
-                $"{this.AccountType} {this.AccountAlias}, the account number is {this.AccountNumber} and you have ${this.Balance}." +
+                $"{this.AccountType} {this.AccountAlias}, the account number is {this.accountID} and you have ${this.Balance}." +
                 $"It was opened on {this.CreatedAt}");
 
         }
@@ -77,7 +75,7 @@ namespace BankingV1._8.Account
             try
             {
                 Account account = obj as Account;
-                return this.AccountNumber.Equals(account.AccountNumber);
+                return this.accountID.Equals(account.accountID);
             }
             catch (InvalidCastException)
             {
@@ -97,7 +95,7 @@ namespace BankingV1._8.Account
 
         public override int GetHashCode()
         {
-            return 239528309 + AccountNumber.GetHashCode();
+            return 239528309 + accountID.GetHashCode();
         }
     }
 }

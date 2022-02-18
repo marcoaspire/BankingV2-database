@@ -15,24 +15,15 @@ namespace BankingV1._8.Account.CurrentAccount
 
         public override Account NewAccount()
         {
-            bool validAccount, validBalance = false;
-            long accountNumber;
+            bool validBalance = false;
             float balance;
 
             Current account = new Current(BankMenu.userID, 10000);
             account.AccountType = "Current account";
 
-
             do
             {
-                Console.WriteLine("\nType your account numbers");
-                validAccount = Int64.TryParse(Console.ReadLine(), out accountNumber);
-                account.AccountNumber = accountNumber;
-            } while (!validAccount);
-
-            do
-            {
-                Console.WriteLine("Type account name");
+                Console.WriteLine("\nType account name");
                 account.AccountAlias = Console.ReadLine();
                 if (string.IsNullOrEmpty(account.AccountAlias))
                     Console.WriteLine("Error:Name can not be empty");
@@ -48,14 +39,14 @@ namespace BankingV1._8.Account.CurrentAccount
             //Console.WriteLine($"Hello dear user, your have a new {account.AccountType} {account.AccountAlias}, the account number is {account.AccountNumber} and you have ${account.Balance}");
 
             //operation
-            AddAccount(account, new Operation("New Account", account, 0, 0));
+            AddAccount(account, new Operation("New Account", account, 0));
             //new OperationBO().AddOperation(new Operation("New Account", account, 0, 0));
 
             return account;
         }
 
 
-
+        /*
         public override void Deposit(Account account)
         {
             Current currentAccount =account as Current;
@@ -89,26 +80,25 @@ namespace BankingV1._8.Account.CurrentAccount
             }
 
         }
-
+        **/
         public override bool AddAccount(Account a, Operation operation)
         {
             Current c = a as Current;
-            SqlParameter[] parameters = new SqlParameter[14];
-            parameters[0] = new SqlParameter("@number", c.AccountNumber);
-            parameters[1] = new SqlParameter("@alias", c.AccountAlias);
-            parameters[2] = new SqlParameter("@type", 1);
-            parameters[3] = new SqlParameter("@balance", c.Balance);
-            parameters[4] = new SqlParameter("@userID", BankMenu.userID);
-            parameters[5] = new SqlParameter("@depositLimit", c.DepositLimit);
-            parameters[6] = new SqlParameter("@interest", DBNull.Value);
-            parameters[7] = new SqlParameter("@creditLimit", DBNull.Value);
-            parameters[8] = new SqlParameter("@createdAt", DateTime.Now);
+            SqlParameter[] parameters = new SqlParameter[12];
+            parameters[0] = new SqlParameter("@alias", c.AccountAlias);
+            parameters[1] = new SqlParameter("@type", 1);
+            parameters[2] = new SqlParameter("@balance", c.Balance);
+            parameters[3] = new SqlParameter("@userID", BankMenu.userID);
+            parameters[4] = new SqlParameter("@depositLimit", c.DepositLimit);
+            parameters[5] = new SqlParameter("@interest", DBNull.Value);
+            parameters[6] = new SqlParameter("@creditLimit", DBNull.Value);
+            parameters[7] = new SqlParameter("@createdAt", DateTime.Now);
 
-            parameters[9] = new SqlParameter("@operationType", operation.OperationType);
-            parameters[10] = new SqlParameter("@amount", operation.Amount);
-            parameters[11] = new SqlParameter("@currentBalance", ((Account)operation.Account.Clone()).Balance);
-            parameters[12] = new SqlParameter("@previousBalance", operation.PreviousBalance);
-            parameters[13] = new SqlParameter("@operationDate", operation.Date);
+            parameters[8] = new SqlParameter("@operationType", operation.OperationType);
+            parameters[9] = new SqlParameter("@amount", operation.Amount);
+            parameters[10] = new SqlParameter("@currentBalance", ((Account)operation.Account).Balance);
+            //parameters[11] = new SqlParameter("@previousBalance", operation.PreviousBalance);
+            parameters[11] = new SqlParameter("@operationDate", operation.Date);
             
 
 
@@ -117,20 +107,24 @@ namespace BankingV1._8.Account.CurrentAccount
         }
 
         
-        public override void UpdateAccount(Account a)
+        public override void UpdateAccount(Account a, Operation operation)
         {
             Current c = a as Current;
                         
-            SqlParameter[] parameters = new SqlParameter[8];
-            parameters[0] = new SqlParameter("@number", c.AccountNumber);
+            SqlParameter[] parameters = new SqlParameter[11];
             parameters[1] = new SqlParameter("@alias", c.AccountAlias);
             parameters[2] = new SqlParameter("@balance", c.Balance);
             parameters[3] = new SqlParameter("@depositLimit", c.DepositLimit);
             parameters[4] = new SqlParameter("@interest", DBNull.Value);
             parameters[5] = new SqlParameter("@creditLimit", DBNull.Value);
             parameters[6] = new SqlParameter("@accountID", c.AccountID);
-            parameters[7] = new SqlParameter("@userID", BankMenu.userID);
-            
+            parameters[0] = new SqlParameter("@userID", BankMenu.userID);
+
+            parameters[7] = new SqlParameter("@operationType", operation.OperationType);
+            parameters[8] = new SqlParameter("@amount", operation.Amount);
+            parameters[9] = new SqlParameter("@currentBalance", ((Account)operation.Account).Balance);
+            //parameters[10] = new SqlParameter("@previousBalance", operation.PreviousBalance);
+            parameters[10] = new SqlParameter("@operationDate", operation.Date);
 
             bool res = new AccountDataAccess().Update(parameters);
 

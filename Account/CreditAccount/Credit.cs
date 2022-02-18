@@ -12,14 +12,14 @@ namespace BankingV1._8.Account.CreditAccount
         private float limit;
         public Credit() : base()
         { }
-        public Credit(int accountID,int userID, string accountName, long accountNumber, string accountType, float limit, float interest) : base(accountID,userID, accountName, accountNumber, accountType, 0)
+        public Credit(int accountID,int userID, string accountName, string accountType, float limit, float interest) : base(accountID,userID, accountName, accountType, 0)
         {
             Interest = interest;
             Limit = limit;
             Balance = 0;
         }
 
-        public Credit(int accountID,int userID, string accountName, long accountNumber, string accountType, float balance, float limit, float interest) : base(accountID,userID, accountName, accountNumber, accountType, 0)
+        public Credit(int accountID,int userID, string accountName, string accountType, float balance, float limit, float interest) : base(accountID,userID, accountName, accountType, 0)
         {
             Interest = interest;
             Limit = limit;
@@ -42,7 +42,7 @@ namespace BankingV1._8.Account.CreditAccount
         public override string ToString()
         {
             return String.Format($"-Hello dear user, your " +
-                $"{this.AccountType} {this.AccountAlias}, the account number is {this.AccountNumber}, it was opened on { this.CreatedAt}.\n" +
+                $"{this.AccountType} {this.AccountAlias}, the account number is {this.AccountID}, it was opened on { this.CreatedAt}.\n" +
                 $"Balance: {this.Balance} \n" +
                 $"Available Credit: {this.Limit - this.Balance} \n" +
                 $"Credit Limit: {this.Limit} \n");

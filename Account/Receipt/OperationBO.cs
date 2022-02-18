@@ -22,15 +22,13 @@ namespace BankingV1._8.Account.Receipt
         public bool AddOperation(Operation operation)
         {
 
-            SqlParameter[] parameters = new SqlParameter[7];
+            SqlParameter[] parameters = new SqlParameter[5];
             parameters[0] = new SqlParameter("@type", operation.OperationType);
             parameters[1] = new SqlParameter("@amount", operation.Amount);
             parameters[2] = new SqlParameter("@currentBalance", ((Account)operation.Account.Clone()).Balance);
-            parameters[3] = new SqlParameter("@previousBalance", operation.PreviousBalance);
-            parameters[4] = new SqlParameter("@accountID", operation.Account.AccountID);
-            parameters[5] = new SqlParameter("@operationDate", operation.Date);
-            parameters[6] = new SqlParameter("@operationTypeID", -1);
-
+            parameters[3] = new SqlParameter("@accountID", operation.Account.AccountID);
+            parameters[4] = new SqlParameter("@operationDate", operation.Date);
+            
             
 
             bool res = new OperationDataAccess().Store(parameters);
