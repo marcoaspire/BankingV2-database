@@ -67,35 +67,17 @@ namespace BankingV1._8.Menu
             } while (!UserBO.ValidatePassword(password) || !validEmail);
             User newUser = new User(email, password, firstName, lastName);
             if (usBO.AddUser(newUser))
+            {
                 Console.WriteLine("User saved");
+                return true;
+            }
             else
             {
-                Console.WriteLine("We could not save");
+                Console.WriteLine("We could not save\n");
+
             }
-            try
-            {
-                /*
-                if (UserBO.CheckEmail(email))
-                    throw new Exception("Someone already has this email address. Try again, please.\n");
-                else
-                {
-                    //UserBO.users.AddLast(newUser);
-                    //save in DB
-                    bool res = new UserBO().AddUser(newUser);
-                    if (res)
-                        Console.WriteLine("User saved");
-                    else
-                        Console.WriteLine("Error");
-                    //FileBO.SaveUsers();
-                }
-                */
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                return false;
-            }
-            return true;
+            
+            return false;
         }
         public void LogIn()
         {
@@ -108,6 +90,7 @@ namespace BankingV1._8.Menu
                 Console.WriteLine("\nLogin");
                 Console.WriteLine("Email");
                 email = Console.ReadLine();
+                //null
                 try
                 {
                     email = new MailAddress(email).Address;
@@ -221,7 +204,7 @@ namespace BankingV1._8.Menu
                             Console.WriteLine("4-Return to menu");
                             validNumber = Int32.TryParse(Console.ReadKey().KeyChar.ToString(), out choice);
                             if (choice > 4 || choice < 1)
-                                Console.WriteLine("Invalid option. Please enter a number between 1 and 4.");
+                                Console.WriteLine("\nInvalid option. Please enter a number between 1 and 4.");
 
                         } while (!validNumber || choice > 4 || choice < 1);
                         if (choice == 4)
@@ -478,7 +461,7 @@ namespace BankingV1._8.Menu
                                 Console.WriteLine("3- Cancel");
                                 validNumber = Int32.TryParse(Console.ReadKey().KeyChar.ToString(), out choice);
                                 if (choice > 3 || choice < 1)
-                                    Console.WriteLine("Invalid option. Please enter a number between 1 and 3.");
+                                    Console.WriteLine("\nInvalid option. Please enter a number between 1 and 3.");
 
                             } while (!validNumber || choice > 3 || choice < 1);
                             if (choice == 3)

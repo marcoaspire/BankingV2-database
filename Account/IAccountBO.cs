@@ -12,6 +12,7 @@ namespace BankingV1._8.Account
         Account NewAccount();
         void DeleteAccount(Account a);
         void UpdateAccount(Account a, Operation operation);
-
+        //Withdraw/Deposit
+        bool AddAccount(Account a, Operation operation);
     }
 }

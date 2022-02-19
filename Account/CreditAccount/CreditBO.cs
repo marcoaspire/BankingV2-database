@@ -57,7 +57,6 @@ namespace BankingV1._8.Account.CreditAccount
                     Operation operation = new Operation("Pay with credit", account, withdrawal);
                     account.Balance += withdrawal;
                     UpdateAccount(account, operation);
-                    //OperationBO.operations.Add(DateTime.Now, new Operation("Pay with credit", (Account)account.Value.Clone(), availableCredit, withdrawal));
                     Console.WriteLine(((Credit)account).ToString());
                 }
             }

@@ -44,7 +44,7 @@ namespace BankingV1._8.UserFolder
             parameter[1] = new SqlParameter("@password", u.Password);
             parameter[2] = new SqlParameter("@firstname", u.FirstName);
             parameter[3] = new SqlParameter("@lastname", u.LastName);
-
+            //validar email que no se encuentre registrado
             bool res = new UserDataAccess().Store(parameter);
             return res;
         }

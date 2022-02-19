@@ -35,7 +35,7 @@ namespace BankingV1._8.Account.CurrentAccount
                 validBalance = float.TryParse(Console.ReadLine(), out balance);
                 if (CheckBalance(balance))
                     account.Balance = balance;
-            } while (!validBalance || account.Balance < 0);
+            } while (!validBalance || account.Balance <= 0);
             //Console.WriteLine($"Hello dear user, your have a new {account.AccountType} {account.AccountAlias}, the account number is {account.AccountNumber} and you have ${account.Balance}");
 
             //operation

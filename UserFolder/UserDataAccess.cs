@@ -14,23 +14,44 @@ namespace BankingV1._8.UserFolder
     {
         public bool Store(SqlParameter[] parameters)
         {
-            //try
-            //{
-                //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
+            try
+            {
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
                 SqlConnection connection = new SqlConnection(connectionString);
-                SqlCommand cmd = new SqlCommand("insert into [tbl_user](Email,Password,FirstName,LastName) values(@email,@password,@firstname,@lastname)", connection);
+                SqlCommand cmd = new SqlCommand("sp_insertuser", connection);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                //SqlCommand cmd = new SqlCommand("insert into [tbl_user](Email,Password,FirstName,LastName) values(@email,@password,@firstname,@lastname)", connection);
                 cmd.Parameters.AddRange(parameters);
                 connection.Open();
                 // Execute the command
                 cmd.ExecuteNonQuery();//INSERT, DELETE, UPDATE  
                 connection.Close();
                 return true;
-            //}
-            //catch (Exception ex)
-            //{
-               // Console.WriteLine(ex.Message);
-            //}
+            }
+            catch (ConfigurationErrorsException e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            catch (SqlException ex)
+            {
+                Console.WriteLine(ex.Message);
+                //Error number 2627 in the THROW statement is outside the valid range. Specify an error number in the valid range of 50000 to 2147483647.
+                if (ex.Number == 35100)
+                {
+                    Console.WriteLine("Someone already has this email address. Try again, please.");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                //2601
+                Console.WriteLine(ex.Data.Keys);
+                Console.WriteLine(ex.Message);
+            }
 
             return false;
         }
@@ -39,7 +60,6 @@ namespace BankingV1._8.UserFolder
             try
             {
                 DataSet ds = new DataSet();
-                //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
                 // Create and initialize the connection using connection string
                 SqlConnection connection = new SqlConnection(connectionString);
@@ -64,9 +84,14 @@ namespace BankingV1._8.UserFolder
             {
                 //User not found
                 return null;
-            }catch (Exception)
+            }
+            catch (ConfigurationErrorsException e)
             {
-                Console.WriteLine("Error");
+                Console.WriteLine(e.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             return null;
         }
@@ -102,9 +127,13 @@ namespace BankingV1._8.UserFolder
                 //User not found
                 return null;
             }
-            catch (Exception)
+            catch (ConfigurationErrorsException e)
             {
-                Console.WriteLine("Error");
+                Console.WriteLine(e.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
             return null;
         }

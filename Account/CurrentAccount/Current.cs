@@ -19,6 +19,10 @@ namespace BankingV1._8.Account.CurrentAccount
         {
             DepositLimit = max;
         }
+        public Current(int accountID, string accountName, string accountType, float balance, float max) : base(accountID,accountName, accountType,balance)
+        {
+            DepositLimit = max;
+        }
 
         public float DepositLimit { get => depositLimit; set => depositLimit = value; }
     }

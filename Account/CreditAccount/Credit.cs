@@ -34,6 +34,14 @@ namespace BankingV1._8.Account.CreditAccount
             Balance = 0;
         }
 
+        public Credit(int accountID,string accountName, string accountType, float balance, float limit, float interest) : base(accountID,accountName, accountType, balance)
+        {
+            Interest = interest;
+            Limit = limit;
+            Balance = balance;
+        }
+
+
         //Properties 
         public float Interest { get => interest; set => interest = value; }
         public float Limit { get => limit; set => limit = value; }

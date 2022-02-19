@@ -34,13 +34,14 @@ namespace BankingV1._8.Account
             this.userID = userID;
             this.accountID = accountID;
         }
-        public Account(int userID, string accountName, string accountType, float balance)
+        public Account(int accountID, string accountName, string accountType, float balance)
         {
+
+            this.accountID = accountID;
             AccountAlias = accountName;
             AccountType = accountType;
             Balance = balance;
             this.createdAt = DateTime.Now;
-            this.userID = userID;
         }
         
 
@@ -65,7 +66,7 @@ namespace BankingV1._8.Account
         public override string ToString()
         {
             return String.Format($"-Hello dear user, your " +
-                $"{this.AccountType} {this.AccountAlias}, the account number is {this.accountID} and you have ${this.Balance}." +
+                $"{this.AccountType} {this.AccountAlias}, the account number is {this.AccountID} and you have ${this.Balance}." +
                 $"It was opened on {this.CreatedAt}");
 
         }

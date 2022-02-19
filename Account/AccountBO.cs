@@ -40,12 +40,11 @@ namespace BankingV1._8.Account
                 validDeposit = float.TryParse(Console.ReadLine(), out deposit);
             } while (!validDeposit || deposit < 0);
             float previous = account.Balance;
+
             Operation operation = new Operation("Deposit", account, deposit);
             account.Balance += deposit;
-            //OperationBO.operations.Add(DateTime.Now, new Operation("Deposit", (Account)account.Value.Clone(), accountAuxiliary.Balance, deposit));
             this.UpdateAccount(account, operation);
             Console.WriteLine($"Now your balance is ${account.Balance}");
-            //return account;
         }
         public virtual void Withdraw(Account account)
         {
@@ -56,42 +55,26 @@ namespace BankingV1._8.Account
             {
                 Console.WriteLine("Type the amount you want to withdraw");
                 validWithdrawal = float.TryParse(Console.ReadLine(), out withdrawal);
-            } while (!validWithdrawal);
+            } while (!validWithdrawal || withdrawal <= 0);
             if (withdrawal > account.Balance)
             {
                 Console.WriteLine($"Your balance is less than {withdrawal} \n Transaction failed");
             }
             else
             {
-                //Account auxiliar = (Account)account.Value.Clone();
                 float previous = account.Balance;
                 Operation operation = new Operation("Withdrawal", account,withdrawal);
                 account.Balance -= withdrawal;
-                //OperationBO.operations.Add(DateTime.Now, new Operation("Withdraw", (Account)account.Value.Clone(), auxiliar.Balance, withdrawal));
                 this.UpdateAccount(account, operation);
-                
                 Console.WriteLine($"Now your balance is ${account.Balance}");
 
             }
-            //return account;
         }
 
         public virtual float MonthEndBalance(Account account)
         {
             return account.Balance;
         }
-        /*
-        public static void ShowAllAcounts()
-        {
-            Console.WriteLine("Your accounts are:");
-            foreach (Account item in AccountBO.accounts)
-            {
-                if (BankMenu.email_session.Equals(item.Owner))
-                    Console.WriteLine(item.ToString());
-            }
-
-        }
-        */
         public static Account AskAccountNumber()
         {
             bool validAccount;
@@ -115,7 +98,6 @@ namespace BankingV1._8.Account
             if (res.Tables[0].Rows.Count > 0)
             {
                 acc = res.Tables[0].Rows[0];
-                Console.WriteLine(acc["AccountType"]);
                 switch (Convert.ToInt32(acc["AccountType"]))
                 {
                     case 1:
@@ -147,10 +129,52 @@ namespace BankingV1._8.Account
         {
             if (balance < 1)
             {
-                Console.WriteLine("Balance must be positive. Try again");
+                Console.WriteLine("Balance must be a positive number. Try again");
                 return false;
             }
-            return true;
+            else return true;
+        }
+        public static void FindAccountsByUser()
+        {
+            Account a = null;
+            try
+            {
+                SqlParameter parameter = new SqlParameter();
+                parameter = new SqlParameter("@userID", BankMenu.userID);
+                DataSet res = new AccountDataAccess().SearchAccountByUser(parameter);
+
+                if (res.Tables[0].Rows.Count > 0)
+                    foreach (DataRow account in res.Tables[0].Rows)
+                    {
+                        switch (Int32.Parse(account["AccountType"].ToString()))
+                        {
+                            case 1:
+
+                                a = new Current(Int32.Parse(account["AccountID"].ToString()), account["AccountAlias"].ToString(), "Current Account", float.Parse(account["Balance"].ToString()), float.Parse(account["DepositLimit"].ToString()));
+                                break;
+                            case 2:
+                                a = new Saving(Int32.Parse(account["AccountID"].ToString()), account["AccountAlias"].ToString(), "Saving Account", float.Parse(account["Balance"].ToString()), float.Parse(account["Interest"].ToString()));
+                                break;
+                            case 3:
+                                a = new Credit(Int32.Parse(account["AccountID"].ToString()), account["AccountAlias"].ToString(), "Credit Account", float.Parse(account["Balance"].ToString()), float.Parse(account["CreditLimit"].ToString()), float.Parse(account["Interest"].ToString()));
+
+                                break;
+                            default:
+                                break;
+                        }
+                        Console.WriteLine(a.ToString());
+                    }
+                else
+                {
+                    Console.WriteLine("You don't have an account with us. Open your account now!");
+                }
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine(e.Message);
+            }
+           
         }
         //interface methods
         public abstract Account NewAccount();
@@ -158,10 +182,9 @@ namespace BankingV1._8.Account
         public virtual void DeleteAccount(Account a)
         {
             if (a.Balance != 0)
-                Console.WriteLine("You need to withdraw all your money before to delete");
+                Console.WriteLine("\nYou need to withdraw all your money before to delete");
             else
             {
-                //OperationBO.operations.Add(DateTime.Now, new Operation("Account deleted", a, a.Balance, 0));
                 SqlParameter[] parameters = new SqlParameter[2];
                 parameters[0] = new SqlParameter("@userID", BankMenu.userID);
                 parameters[1] = new SqlParameter("@accountID", a.AccountID);
@@ -181,26 +204,7 @@ namespace BankingV1._8.Account
 
         public abstract bool AddAccount(Account u, Operation operation);
 
-        public static void FindAccountsByUser()
-        {
-            SqlParameter parameter = new SqlParameter();
-            parameter = new SqlParameter("@userID", BankMenu.userID);
-
-            //List<Account>accounts = new List<Account>();
-            DataSet res = new AccountDataAccess().SearchAccountByUser(parameter);
-            
-            if (res.Tables[0].Rows.Count>0)
-                foreach (DataRow account in res.Tables[0].Rows)
-                {
-                    //TODO: CHANGE 
-                    Console.WriteLine("{0} {1} {2} {3}",account["AccountID"], account["AccountAlias"], 
-                        account["Balance"], account["AccountType"]);
-                }
-            else
-            {
-                Console.WriteLine("You don't have an account with us. Open your account now!");
-            }
-        }
+        
 
     }
 }

@@ -18,17 +18,12 @@ namespace BankingV1._8.Account.Receipt
         {
             try
             {
-                //string connectionString = "Data Source=ASPLAPLTM057;Initial Catalog=banking;User ID=sa;Password=aspire123;Encrypt=True;TrustServerCertificate=True;";
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
                 SqlConnection connection = new SqlConnection(connectionString);
-
-                //SqlCommand cmd = new SqlCommand("insert into operation(OperationType,Amount,CurrentBalance,PreviousBalance,userID,OperationDate)" +
-                //    " values(@operationType,@amount,@currentBalance,@previousBalance,@userID,@operationDate)", connection);
                 SqlCommand cmd = new SqlCommand("sp_insertOperation", connection);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddRange(parameters);
                 connection.Open();
-                // Execute the command
                 cmd.ExecuteNonQuery();//INSERT, DELETE, UPDATE, and SET
                 connection.Close();
                 return true;
@@ -36,9 +31,10 @@ namespace BankingV1._8.Account.Receipt
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                return false;
             }
 
-            return false;
+            
         }
         public Operation Search(SqlParameter[] parameters)
         {
@@ -46,9 +42,7 @@ namespace BankingV1._8.Account.Receipt
             {
                 DataSet ds = new DataSet();
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                // Create and initialize the connection using connection string
                 SqlConnection connection = new SqlConnection(connectionString);
-                //Define Command Type
                 SqlCommand cmd = new SqlCommand("select * from tbl_Operation " +
                     "where email = @email and password = @password", connection);
                 cmd.Parameters.AddRange(parameters);

@@ -20,6 +20,10 @@ namespace BankingV1._8.Account.SavingAccount
             Interest = interest;
 
         }
+        public Saving(int accountID,string accountName, string accountType, float balance, float interest) : base(accountID,accountName, accountType, balance)
+        {
+            Interest = interest;
+        }
         //Properties 
         public float Interest { get => interest; set => interest = value; }
 
