@@ -10,12 +10,6 @@ namespace BankingV1._8.UserFolder
 {
     class UserBO
     {
-        //public static LinkedList<User> users;
-        UserDataAccess userDataAccess = new UserDataAccess();
-        static UserBO()
-        {
-            //users = new LinkedList<User>();
-        }
         public static bool ValidatePassword(String password)
         {
             if (password.Length < 8 || password.Contains(" ") || !password.Any(char.IsLetterOrDigit) || !password.Any(char.IsDigit)
@@ -23,28 +17,15 @@ namespace BankingV1._8.UserFolder
                 return false;
             return true;
         }
-        /*
-        public static bool CheckEmail(String email)
-        {
-            foreach (User user in users)
-            {
-                if (user.Email.Equals(email))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        */
         public bool AddUser(User u)
         {
 
-            SqlParameter[] parameter = new SqlParameter[4];
+            SqlParameter[] parameter = new SqlParameter[5];
             parameter[0] = new SqlParameter("@email",  u.Email);
             parameter[1] = new SqlParameter("@password", u.Password);
             parameter[2] = new SqlParameter("@firstname", u.FirstName);
             parameter[3] = new SqlParameter("@lastname", u.LastName);
-            //validar email que no se encuentre registrado
+            parameter[4] = new SqlParameter("@res", -1);
             bool res = new UserDataAccess().Store(parameter);
             return res;
         }

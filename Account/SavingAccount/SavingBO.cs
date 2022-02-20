@@ -1,4 +1,4 @@
-﻿using BankingV1._8.Account.Receipt;
+﻿using BankingV1._8.Account.Log;
 using BankingV1._8.Menu;
 using System;
 using System.Collections.Generic;
@@ -42,11 +42,7 @@ namespace BankingV1._8.Account.SavingAccount
                 //validate balance
             } while (!validBalance || !CheckBalance(balance));
             account.Balance = balance;
-
-
-            //operation
             AddAccount(account, new Operation("New Account", account,0));
-            //Console.WriteLine($"Hello dear user, you have a new saving account {account.AccountAlias} , its account number is {account.AccountNumber} and you have ${account.Balance}");
             return account;
 
         }
@@ -55,7 +51,6 @@ namespace BankingV1._8.Account.SavingAccount
         {
             Saving s = a as Saving;
             SqlParameter[] parameters = new SqlParameter[12];
-            //parameters[0] = new SqlParameter("@number", s.AccountNumber);
             parameters[0] = new SqlParameter("@alias", s.AccountAlias);
             parameters[1] = new SqlParameter("@type", 2);
             parameters[2] = new SqlParameter("@balance", s.Balance);
@@ -68,7 +63,6 @@ namespace BankingV1._8.Account.SavingAccount
             parameters[8] = new SqlParameter("@operationType", operation.OperationType);
             parameters[9] = new SqlParameter("@amount", operation.Amount);
             parameters[10] = new SqlParameter("@currentBalance", ((Account)operation.Account).Balance);
-            //parameters[11] = new SqlParameter("@previousBalance", operation.PreviousBalance);
             parameters[11] = new SqlParameter("@operationDate", operation.Date);
             bool res = new AccountDataAccess().Store(parameters);
             return res;
@@ -90,7 +84,6 @@ namespace BankingV1._8.Account.SavingAccount
             parameters[7] = new SqlParameter("@operationType", operation.OperationType);
             parameters[8] = new SqlParameter("@amount", operation.Amount);
             parameters[9] = new SqlParameter("@currentBalance", ((Account)operation.Account).Balance);
-            //parameters[10] = new SqlParameter("@previousBalance", operation.PreviousBalance);
             parameters[10] = new SqlParameter("@operationDate", operation.Date);
 
             bool res = new AccountDataAccess().Update(parameters);
@@ -98,7 +91,7 @@ namespace BankingV1._8.Account.SavingAccount
             if (res)
                 Console.WriteLine("Your change is saved");
             else
-                Console.WriteLine("error al cambiar saving");
+                Console.WriteLine("An error occurred while updating");
 
         }
     }

@@ -1,4 +1,4 @@
-﻿using BankingV1._8.Account.Receipt;
+﻿using BankingV1._8.Account.Log;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +12,6 @@ namespace BankingV1._8.Account
         Account NewAccount();
         void DeleteAccount(Account a);
         void UpdateAccount(Account a, Operation operation);
-        //Withdraw/Deposit
         bool AddAccount(Account a, Operation operation);
     }
 }

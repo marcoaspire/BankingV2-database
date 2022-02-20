@@ -52,9 +52,9 @@
     <Compile Include="Account\CurrentAccount\Current.cs" />
     <Compile Include="Account\CurrentAccount\CurrentBO.cs" />
     <Compile Include="Account\IAccountBO.cs" />
-    <Compile Include="Account\Receipt\Operation.cs" />
-    <Compile Include="Account\Receipt\OperationBO.cs" />
-    <Compile Include="Account\Receipt\OperationDataAccess.cs" />
+    <Compile Include="Account\Log\Operation.cs" />
+    <Compile Include="Account\Log\OperationBO.cs" />
+    <Compile Include="Account\Log\OperationDataAccess.cs" />
     <Compile Include="Account\SavingAccount\Saving.cs" />
     <Compile Include="Account\SavingAccount\SavingBO.cs" />
     <Compile Include="Menu\BankMenu.cs" />

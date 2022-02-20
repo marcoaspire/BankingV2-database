@@ -1,4 +1,5 @@
 ﻿using BankingV1._8.Menu;
+using BankingV1._8.UserFolder;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -8,9 +9,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BankingV1._8.UserFolder
+
+namespace BankingV1._8.Account.Log
 {
-    class UserDataAccess
+    class OperationDataAccess
     {
         public bool Store(SqlParameter[] parameters)
         {
@@ -18,53 +20,29 @@ namespace BankingV1._8.UserFolder
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
                 SqlConnection connection = new SqlConnection(connectionString);
-                SqlCommand cmd = new SqlCommand("sp_insertuser", connection);
+                SqlCommand cmd = new SqlCommand("sp_insertOperation", connection);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddRange(parameters);
                 connection.Open();
-                // Execute the command
-                int res = cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();//INSERT, DELETE, UPDATE, and SET
                 connection.Close();
-                if (res == 0)
-                {
-                    Console.WriteLine("Someone already has this email address. Try again, please.\n");
-                }
-                else if (res == -1)
-                {
-                    Console.WriteLine("There was a problem. Try again, please.\n");
-                }
-                else if (res == 1)
-                    return true;
-                
-                return false;
-            }
-            catch (ConfigurationErrorsException e)
-            {
-                Console.WriteLine(e.Message);
-            }
-            catch (SqlException ex)
-            {
-                Console.WriteLine(ex.Message);
+                return true;
             }
             catch (Exception ex)
             {
-                //2601
-                Console.WriteLine(ex.Data.Keys);
                 Console.WriteLine(ex.Message);
+                return false;
             }
-
-            return false;
+                        
         }
-        public User Search(SqlParameter[] parameters)
+        public Operation Search(SqlParameter[] parameters)
         {
             try
             {
                 DataSet ds = new DataSet();
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                // Create and initialize the connection using connection string
                 SqlConnection connection = new SqlConnection(connectionString);
-                //Define Command Type
-                SqlCommand cmd = new SqlCommand("select * from [tbl_user] " +
+                SqlCommand cmd = new SqlCommand("select * from tbl_Operation " +
                     "where email = @email and password = @password", connection);
                 cmd.Parameters.AddRange(parameters);
                 // Execute the command
@@ -74,23 +52,21 @@ namespace BankingV1._8.UserFolder
                 adapter.Fill(ds);
                 connection.Close();
 
+                /*
                 DataRow user = ds.Tables[0].Rows[0];
                 BankMenu.userID = Convert.ToInt32(user["userID"]);
                 User u = new User(Convert.ToInt32(user["userID"]),user["email"].ToString(), user["password"].ToString(), user["firstName"].ToString(), user["lastName"].ToString());
+                Console.WriteLine(u.FirstName + " id=" + u.UserID); 
                 return u;
+                */
                 
             }catch (IndexOutOfRangeException)
             {
                 //User not found
                 return null;
-            }
-            catch (ConfigurationErrorsException e)
+            }catch (Exception)
             {
-                Console.WriteLine(e.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Error");
             }
             return null;
         }
@@ -101,8 +77,10 @@ namespace BankingV1._8.UserFolder
             {
                 DataSet ds = new DataSet();
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
+                // Create and initialize the connection using connection string
                 SqlConnection connection = new SqlConnection(connectionString);
-                SqlCommand cmd = new SqlCommand("select * from [tbl_user] " +
+                //Define Command Type
+                SqlCommand cmd = new SqlCommand("select * from [tbl_User] " +
                     "where UserID=@userID", connection);
                 cmd.Parameters.Add(parameter);
                 // Execute the command
@@ -120,15 +98,12 @@ namespace BankingV1._8.UserFolder
             }
             catch (IndexOutOfRangeException)
             {
+                //User not found
                 return null;
             }
-            catch (ConfigurationErrorsException e)
+            catch (Exception)
             {
-                Console.WriteLine(e.Message);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine("Error");
             }
             return null;
         }

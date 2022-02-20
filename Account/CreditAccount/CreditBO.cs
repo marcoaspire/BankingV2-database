@@ -1,4 +1,4 @@
-﻿using BankingV1._8.Account.Receipt;
+﻿using BankingV1._8.Account.Log;
 using BankingV1._8.Menu;
 using System;
 using System.Collections.Generic;

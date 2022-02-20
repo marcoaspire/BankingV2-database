@@ -1,7 +1,7 @@
 ﻿using BankingV1._8.Account;
 using BankingV1._8.Account.CreditAccount;
 using BankingV1._8.Account.CurrentAccount;
-using BankingV1._8.Account.Receipt;
+using BankingV1._8.Account.Log;
 using BankingV1._8.Account.SavingAccount;
 using BankingV1._8.UserFolder;
 using System;
@@ -30,7 +30,7 @@ namespace BankingV1._8.Menu
                 Console.WriteLine("\n\nSign Up");
                 Console.WriteLine("Type your name");
                 firstName = Console.ReadLine();
-                Console.WriteLine("Type your lastName");
+                Console.WriteLine("Type your last name");
                 lastName = Console.ReadLine();
                 Console.WriteLine("Type your email");
                 email = Console.ReadLine();
@@ -73,7 +73,7 @@ namespace BankingV1._8.Menu
             }
             else
             {
-                Console.WriteLine("We could not save\n");
+                Console.WriteLine("We could not register\n");
 
             }
             
@@ -84,7 +84,6 @@ namespace BankingV1._8.Menu
 
             bool verification = false;
             string password,email;
-            bool validEmail = false;
             do
             {
                 Console.WriteLine("\nLogin");
@@ -102,7 +101,6 @@ namespace BankingV1._8.Menu
                     User userValidated = usBO.Find(u);
                     if (userValidated != null)
                     {
-                        Console.WriteLine(userValidated.UserID);
                         verification = true;
                         DisplayMenu();
                     }
@@ -117,26 +115,6 @@ namespace BankingV1._8.Menu
                     Console.WriteLine("Email format is invalid");
                    
                 }
-
-                
-                //try
-                //{
-                    
-                //}
-                //catch (ArgumentException)
-                //{
-                //    Console.WriteLine("Invalid format");
-                //}
-                //catch (FormatException)
-                //{
-                //    Console.WriteLine("Please provide a valid email address");
-                //}
-                //catch (Exception e)
-                //{
-
-                //    Console.WriteLine(e.Message);
-                //}
-
             } while (!verification);
 
         }
@@ -216,67 +194,17 @@ namespace BankingV1._8.Menu
                         {
                             case 1:
                                 newAccount = currentBO.NewAccount();
-                                /*
-                                if (currentBO.AddAccount(newAccount))
-                                {
-                                    Console.WriteLine("You hava a new account");
-                                    //operation TODO: HERE
-                                    //operationBO.AddOperation(new Operation("New Account", newAccount, 0, 0));
-                                }
-                                else
-                                    Console.WriteLine("error");
-                                */
                                 break;
                             case 2:
                                 newAccount = savingBO.NewAccount();
-                                /*
-                                if (savingBO.AddAccount(newAccount))
-                                {
-
-                                    Console.WriteLine("You hava a new saving account");
-                                }
-                                else
-                                    Console.WriteLine("error");
-                                */
                                 break;
                             case 3:
                                 newAccount = creditBO.NewAccount();
-                                /*
-                                if (creditBO.AddAccount(newAccount))
-                                {
-
-                                    Console.WriteLine("You hava a new credit account");
-                                }
-                                else
-                                    Console.WriteLine("error");
-                                */
                                 break;
                             default:
                                 break;
                         }
-                        try
-                        {
-                            //TODO: Check if tha account has not been registered
-                            /*
-                            if (!AccountBO.accounts.Contains(newAccount))
-                            {
-                                AccountBO.accounts.AddLast(newAccount);
-                                OperationBO.operations.Add(DateTime.Now, new Operation("NewAccount", (Account.Account)newAccount.Clone(), newAccount.Balance, 0));
-                            }
-                            else
-                                Console.WriteLine("Error: We could not open the new account because Someone already has that account number.");
-                            */
-                        }
-                        catch (InvalidCastException)
-                        {
-                            Console.WriteLine("Specified cast is not valid");
-                        }
-                        catch (Exception)
-                        {
-
-                            Console.WriteLine("Error");
-                        }
-
+                        
                         break;
                     case '2':
                         Account.Account accountFound = AccountBO.AskAccountNumber();
@@ -306,49 +234,7 @@ namespace BankingV1._8.Menu
                                 savingBO.Deposit(accountFound);
                             }
                         }
-                        /*
-                        if (AccountBO.accounts != null)
-                        {
-                            LinkedListNode<Account.Account> accoutFound = AccountBO.AskAccountNumber();
-                            if (accoutFound != null)
-                            {
-                                try
-                                {
-                                    string type = accoutFound.Value.GetType().Name;
-
-                                    if (type.Equals("Credit"))
-                                    {
-                                        creditBO.Deposit(accoutFound);
-                                    }
-                                    else if (type.Equals("Current"))
-                                    {
-                                        currentBO.Deposit(accoutFound);
-                                    }
-                                    else if (type.Equals("Saving"))
-                                    {
-                                        savingBO.Deposit(accoutFound);
-                                    }
-                                }
-                                catch (InvalidCastException)
-                                {
-                                    Console.WriteLine("Specified cast is not valid");
-                                }
-                                catch (Exception e)
-                                {
-                                    Console.WriteLine("Transaction has failed. " + e.Message);
-                                }
-
-
-
-                            }
-                            else
-                                Console.WriteLine("We couldn’t find account with that number ");
-
-
-                        }
-                        else
-                            Console.WriteLine("You don't have an account with us. Open your account now!");
-                        */
+                        
                         break;
                         
                     case '5':
@@ -369,39 +255,6 @@ namespace BankingV1._8.Menu
                                 savingBO.Withdraw(accountFound);
                             }
                         }
-                        /*
-                        if (AccountBO.accounts != null)
-                        {
-                            LinkedListNode<Account.Account> accoutFound = AccountBO.AskAccountNumber();
-
-
-                            if (accoutFound != null)
-                            {
-                                string type = accoutFound.Value.GetType().Name;
-
-                                if (type.Equals("Credit"))
-                                {
-                                    creditBO.Withdraw(accoutFound);
-                                }
-                                else if (type.Equals("Current"))
-                                {
-                                    currentBO.Withdraw(accoutFound);
-                                }
-                                else if (type.Equals("Saving"))
-                                {
-                                    savingBO.Withdraw(accoutFound);
-                                }
-                            }
-                            else
-                            {
-                                Console.WriteLine("We couldn’t find account with that number ");
-                            }
-
-
-                        }
-                        else
-                            Console.WriteLine("You don't have an account with us. Open your account now!");
-                        */
                         break;
                     case '6':
                         /*
@@ -516,8 +369,6 @@ namespace BankingV1._8.Menu
                     case '8':
                         Console.WriteLine("Thank you for using this system");
                         userID = -1;
-                        //new OperationBO().PrintOperations();
-                        //FileBO.SaveData();
                         LoginMenu();
                         break;
 
