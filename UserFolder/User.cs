@@ -13,6 +13,7 @@ namespace BankingV1._8.UserFolder
         private string firstName;
         private string lastName;
         private int userID;
+
         public User()
         {
         }

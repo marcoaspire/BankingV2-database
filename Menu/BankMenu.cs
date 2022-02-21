@@ -15,29 +15,31 @@ namespace BankingV1._8.Menu
 {
     class BankMenu
     {
-        //it´s like a session variable
-        public static int userID; //change to User class
-        //Session["UserID"];
-
+        
 
         public bool Register()
         {
             string password = "", email,firstName,lastName;
-            bool validEmail = false;
+            bool valid = false;
             UserBO usBO = new UserBO();
             do
             {
-                Console.WriteLine("\n\nSign Up");
-                Console.WriteLine("Type your name");
-                firstName = Console.ReadLine();
-                Console.WriteLine("Type your last name");
-                lastName = Console.ReadLine();
-                Console.WriteLine("Type your email");
-                email = Console.ReadLine();
                 try
                 {
+                
+                    Console.WriteLine("\n\nSign Up");
+                    Console.WriteLine("Type your name");
+                    firstName = Console.ReadLine();
+                    if (!UserBO.ValidateName(firstName))
+                        throw new Exception("Name must has at least two characters ( just letters), try again, please");
+                    Console.WriteLine("Type your last name");
+                    lastName = Console.ReadLine();
+                    if (!UserBO.ValidateName(lastName))
+                        throw new Exception("Last name must has at least two characters ( just letters), try again, please");
+                    Console.WriteLine("Type your email");
+                    email = Console.ReadLine();
+                
                     email = new MailAddress(email).Address;
-                    validEmail = true;
                     Console.WriteLine("\nType your password, it needs to follow the below rules");
                     Console.WriteLine("It should contain at least one uppercase and lowercase alphabets");
                     Console.WriteLine("It should contain at least one numerical value");
@@ -49,8 +51,20 @@ namespace BankingV1._8.Menu
                     {
                         throw new Exception("The password does not meet the requirements, try again, please");
                     }
+                
+                    User newUser = new User(email, password, firstName, lastName);
+                    if (usBO.AddUser(newUser))
+                    {
+                        Console.WriteLine("User saved");
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("We could not register\n");
+
+                    }
                 }
-                catch (ArgumentException)
+                    catch (ArgumentException)
                 {
                     Console.WriteLine("Invalid format");
                 }
@@ -64,19 +78,7 @@ namespace BankingV1._8.Menu
 
                     Console.WriteLine(e.Message);
                 }
-            } while (!UserBO.ValidatePassword(password) || !validEmail);
-            User newUser = new User(email, password, firstName, lastName);
-            if (usBO.AddUser(newUser))
-            {
-                Console.WriteLine("User saved");
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("We could not register\n");
-
-            }
-            
+            } while (!valid);
             return false;
         }
         public void LogIn()
@@ -89,13 +91,11 @@ namespace BankingV1._8.Menu
                 Console.WriteLine("\nLogin");
                 Console.WriteLine("Email");
                 email = Console.ReadLine();
-                //null
                 try
                 {
                     email = new MailAddress(email).Address;
                     Console.WriteLine("\nPassword");
                     password = Console.ReadLine();
-                    //search in DB
                     UserBO usBO = new UserBO();
                     User u = new User(email, password);
                     User userValidated = usBO.Find(u);
@@ -162,11 +162,7 @@ namespace BankingV1._8.Menu
                 Console.WriteLine("1.Open a new bank account");
                 Console.WriteLine("2.Display your account details by its number");
                 Console.WriteLine("3.Display all your accounts");
-                Console.WriteLine("4.Deposit/Pay your credit");
-                Console.WriteLine("5.Withdraw/Pay with your credit");
-                //Console.WriteLine("6.End of the month, get your new balance");
-                Console.WriteLine("7.Delete/Change name of your account");
-                Console.WriteLine("8.Exit");
+                Console.WriteLine("4.Exit");
                 Console.WriteLine("Type an option, please");
                 op = Console.ReadKey().KeyChar;
                 Console.WriteLine();
@@ -211,175 +207,122 @@ namespace BankingV1._8.Menu
                         if (accountFound != null)
                         {
                             Console.WriteLine(accountFound.ToString());
+                            do
+                            {
+                                Console.WriteLine("1.Deposit/Pay your credit");
+                                Console.WriteLine("2.Withdraw/Pay with your credit");
+                                Console.WriteLine("3-Change name of your account");
+                                Console.WriteLine("4.Delete your account");
+                                Console.WriteLine("5-Return to menu");
+                                validNumber = Int32.TryParse(Console.ReadKey().KeyChar.ToString(), out choice);
+                                if (choice > 5 || choice < 1)
+                                    Console.WriteLine("\nInvalid option. Please enter a number between 1 and 5.");
+
+                            } while (!validNumber || choice > 5 || choice < 1);
+                            switch (choice)
+                            {
+                                case 1:
+                                    string type = accountFound.AccountType;
+                                    if (type.Equals("Credit account"))
+                                    {
+                                        creditBO.Deposit(accountFound);
+                                    }
+                                    else if (type.Equals("Current account"))
+                                    {
+                                        currentBO.Deposit(accountFound);
+                                    }
+                                    else if (type.Equals("Saving account"))
+                                    {
+                                        savingBO.Deposit(accountFound);
+                                    }
+                                    
+                                    break;
+
+                                case 2:
+                                    
+                                    type = accountFound.AccountType;
+                                    if (type.Equals("Credit account"))
+                                    {
+                                        creditBO.Withdraw(accountFound);
+                                    }
+                                    else if (type.Equals("Current account"))
+                                    {
+                                        currentBO.Withdraw(accountFound);
+                                    }
+                                    else if (type.Equals("Saving account"))
+                                    {
+                                        savingBO.Withdraw(accountFound);
+                                    }
+                                    
+                                    break;
+                                case 3:
+                                    type = accountFound.AccountType;
+                                    if (type.Equals("Credit account"))
+                                    {
+                                        Credit account = (Credit)accountFound;
+                                        creditBO.UpdateAlias(account);
+                                    }
+                                    else if (type.Equals("Current account"))
+                                    {
+                                        Current account = (Current)accountFound;
+                                        currentBO.UpdateAlias(account);
+                                    }
+                                    else if (type.Equals("Saving account"))
+                                    {
+                                        Saving account = (Saving)accountFound;
+                                        savingBO.UpdateAlias(account);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("tipo mal");
+                                    }
+                                    break;
+                                case 4:
+                                    type = accountFound.AccountType;
+                                    if (type.Equals("Credit account"))
+                                    {
+                                        Credit account = (Credit)accountFound;
+                                        creditBO.DeleteAccount(account);
+                                    }
+                                    else if (type.Equals("Current account"))
+                                    {
+                                        Current account = (Current)accountFound;
+                                        currentBO.DeleteAccount(account);
+                                    }
+                                    else if (type.Equals("Saving account"))
+                                    {
+                                        Saving account = (Saving)accountFound;
+                                        savingBO.DeleteAccount(account);
+                                    }
+
+                                break;
+                                default:
+                                    break;
+                            }
+
+                        }
+                        else
+                        {
+                            Console.WriteLine("We couldn’t find account with that number");
                         }
                         break;
                     case '3':
                             AccountBO.FindAccountsByUser();
                         break;
                     case '4':
-                        accountFound = AccountBO.AskAccountNumber();
-                        if (accountFound != null)
-                        {
-                            string type = accountFound.AccountType;
-                            if (type.Equals("Credit account"))
-                            {
-                                creditBO.Deposit(accountFound);
-                            }
-                            else if (type.Equals("Current account"))
-                            {
-                                currentBO.Deposit(accountFound);
-                            }
-                            else if (type.Equals("Saving account"))
-                            {
-                                savingBO.Deposit(accountFound);
-                            }
-                        }
-                        
-                        break;
-                        
-                    case '5':
-                        accountFound = AccountBO.AskAccountNumber();
-                        if (accountFound != null)
-                        {
-                            string type = accountFound.AccountType;
-                            if (type.Equals("Credit account"))
-                            {
-                                creditBO.Withdraw(accountFound);
-                            }
-                            else if (type.Equals("Current account"))
-                            {
-                                currentBO.Withdraw(accountFound);
-                            }
-                            else if (type.Equals("Saving account"))
-                            {
-                                savingBO.Withdraw(accountFound);
-                            }
-                        }
-                        break;
-                    case '6':
-                        /*
-                        if (AccountBO.accounts != null)
-                        {
-                            LinkedListNode<Account.Account> accoutFound = AccountBO.AskAccountNumber();
-                            try
-                            {
-                                if (accoutFound != null)
-                                {
-                                    string type = accoutFound.Value.GetType().Name;
-                                    Console.WriteLine("Account Statement");
-
-                                    if (type.Equals("Credit"))
-                                    {
-                                        accoutFound.Value.Balance = creditBO.MonthEndBalance((Credit)accoutFound.Value);
-                                        Console.WriteLine();
-                                        Console.WriteLine(accoutFound.Value.ToString());
-                                    }
-                                    else if (type.Equals("Current"))
-                                    {
-                                        accoutFound.Value.Balance = currentBO.MonthEndBalance(accoutFound.Value);
-
-                                        Console.WriteLine(accoutFound.Value.ToString());
-                                    }
-                                    else if (type.Equals("Saving"))
-                                    {
-                                        accoutFound.Value.Balance = savingBO.MonthEndBalance(accoutFound.Value);
-                                        Console.WriteLine(accoutFound.Value.ToString());
-                                    }
-                                }
-                                else
-                                    Console.WriteLine("We couldn’t find account with that number");
-                            }
-                            catch (InvalidCastException)
-                            {
-                                Console.WriteLine("Specified cast is not valid");
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Error:" + e.Message);
-                            }
-
-                        }
-                        else
-                            Console.WriteLine("You don't have an account with us. Open your account now!");
-                        */
-                        break;
-                    case '7':
-                        Account.Account accoutFound = AccountBO.AskAccountNumber();
-                        if (accoutFound != null)
-                        {
-                            do
-                            {
-                                Console.WriteLine("1- Modify the name of your account");
-                                Console.WriteLine("2- Delete your account");
-                                Console.WriteLine("3- Cancel");
-                                validNumber = Int32.TryParse(Console.ReadKey().KeyChar.ToString(), out choice);
-                                if (choice > 3 || choice < 1)
-                                    Console.WriteLine("\nInvalid option. Please enter a number between 1 and 3.");
-
-                            } while (!validNumber || choice > 3 || choice < 1);
-                            if (choice == 3)
-                                break;
-
-                            try
-                            {
-                                string type = accoutFound.AccountType;
-                                if (type.Equals("Credit account"))
-                                {
-                                    Credit account = (Credit)accoutFound;
-                                    if (choice == 1)
-                                    {
-                                        creditBO.UpdateAlias(account);
-                                    }
-                                    else
-                                        creditBO.DeleteAccount(account);
-                                }
-                                else if (type.Equals("Current account"))
-                                {
-                                    Current account = (Current)accoutFound;
-                                    if (choice == 1)
-                                    {
-                                        currentBO.UpdateAlias(account);
-                                    }
-                                    else
-                                        currentBO.DeleteAccount(account);
-                                }
-                                else if (type.Equals("Saving account"))
-                                {
-                                    Saving account = (Saving)accoutFound;
-                                    if (choice == 1)
-                                        savingBO.UpdateAlias(account);
-                                    else
-                                        savingBO.DeleteAccount(account);
-                                }
-                            }
-                            catch (InvalidCastException)
-                            {
-                                Console.WriteLine("Specified cast is not valid");
-                            }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Error:" + e.Message);
-                            }
-
-                        }
-                        else
-                            Console.WriteLine("We couldn’t find account with that number");
-                        
-                        break;
-                    case '8':
-                        Console.WriteLine("Thank you for using this system");
-                        userID = -1;
+                        Console.WriteLine("Your session ended, thank you.");
+                        UserBO.user = null;
                         LoginMenu();
                         break;
 
                     default:
-                        Console.WriteLine("Invalid option. Please enter a number between 1 and 8.");
+                        Console.WriteLine("Invalid option. Please enter a number between 1 and 7.");
                         break;
 
                 }
                 Console.WriteLine("");
 
-            } while (op != '8');
+            } while (op != '4');
 
 
 

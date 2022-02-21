@@ -1,5 +1,6 @@
 ﻿using BankingV1._8.Account.Log;
 using BankingV1._8.Menu;
+using BankingV1._8.UserFolder;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -11,20 +12,14 @@ namespace BankingV1._8.Account.SavingAccount
 {
     class SavingBO : AccountBO
     {
-        public override float MonthEndBalance(Account account)
-        {
-            //interest earning per month
-            Saving savAccount = (Saving)account;
-            Console.WriteLine(savAccount.Balance + savAccount.Balance * savAccount.Interest / (100 * 12));
-            return savAccount.Balance + savAccount.Balance * savAccount.Interest / (100 * 12);
-        }
 
+        
         public override Account NewAccount()
         {
             bool validBalance = false;
             float balance, interest = 10;
 
-            Account account = new Saving(BankMenu.userID, interest);
+            Account account = new Saving(UserBO.user.UserID, interest);
             account.AccountType = "Savings account";
 
             do
@@ -54,7 +49,7 @@ namespace BankingV1._8.Account.SavingAccount
             parameters[0] = new SqlParameter("@alias", s.AccountAlias);
             parameters[1] = new SqlParameter("@type", 2);
             parameters[2] = new SqlParameter("@balance", s.Balance);
-            parameters[3] = new SqlParameter("@userID", BankMenu.userID);
+            parameters[3] = new SqlParameter("@userID", UserBO.user.UserID);
             parameters[4] = new SqlParameter("@depositLimit", DBNull.Value);
             parameters[5] = new SqlParameter("@interest", 5);
             parameters[6] = new SqlParameter("@creditLimit", DBNull.Value);
@@ -79,7 +74,7 @@ namespace BankingV1._8.Account.SavingAccount
             parameters[4] = new SqlParameter("@interest", s.Interest );
             parameters[5] = new SqlParameter("@creditLimit", DBNull.Value);
             parameters[6] = new SqlParameter("@accountID", s.AccountID);
-            parameters[0] = new SqlParameter("@userID", BankMenu.userID);
+            parameters[0] = new SqlParameter("@userID", UserBO.user.UserID);
 
             parameters[7] = new SqlParameter("@operationType", operation.OperationType);
             parameters[8] = new SqlParameter("@amount", operation.Amount);

@@ -1,5 +1,6 @@
 ﻿using BankingV1._8.Account.Log;
 using BankingV1._8.Menu;
+using BankingV1._8.UserFolder;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -11,28 +12,7 @@ namespace BankingV1._8.Account.CreditAccount
 {
     class CreditBO : AccountBO
     {
-        public override float MonthEndBalance(Account account)
-        {
-            //charge interest
-            try
-            {
-                Credit creditAccount = (Credit)account;
-
-                if (creditAccount.Balance > 0)
-                    return creditAccount.Balance + creditAccount.Balance * creditAccount.Interest / (100 * 12);
-                else
-                    return 0;
-            }
-            catch (InvalidCastException)
-            {
-                Console.WriteLine("Specified cast is not valid");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error:" + e.Message);
-            }
-            return 0;
-        }
+        
         public override void Withdraw(Account account)
         {
             float withdrawal;
@@ -115,7 +95,7 @@ namespace BankingV1._8.Account.CreditAccount
                 validBalance = Single.TryParse(Console.ReadLine(), out balance);
 
             } while (!validBalance || !CheckBalance(balance));
-            account = new Credit(BankMenu.userID, interest, balance);
+            account = new Credit(UserBO.user.UserID, interest, balance);
 
             account.AccountType = "Credit account";
 
@@ -158,7 +138,7 @@ namespace BankingV1._8.Account.CreditAccount
             parameters[0] = new SqlParameter("@alias", c.AccountAlias);
             parameters[1] = new SqlParameter("@type", 3);
             parameters[2] = new SqlParameter("@balance", c.Balance);
-            parameters[3] = new SqlParameter("@userID", BankMenu.userID);
+            parameters[3] = new SqlParameter("@userID", UserBO.user.UserID);
             parameters[4] = new SqlParameter("@depositLimit", DBNull.Value);
             parameters[5] = new SqlParameter("@interest", 20);
             parameters[6] = new SqlParameter("@creditLimit",10000);
@@ -187,7 +167,7 @@ namespace BankingV1._8.Account.CreditAccount
             parameters[4] = new SqlParameter("@interest", c.Interest);
             parameters[5] = new SqlParameter("@creditLimit", c.Limit);
             parameters[6] = new SqlParameter("@accountID", c.AccountID);
-            parameters[0] = new SqlParameter("@userID", BankMenu.userID);
+            parameters[0] = new SqlParameter("@userID", UserBO.user.UserID);
 
             parameters[7] = new SqlParameter("@operationType", operation.OperationType);
             parameters[8] = new SqlParameter("@amount", operation.Amount);

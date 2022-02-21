@@ -3,6 +3,7 @@ using BankingV1._8.Account.CurrentAccount;
 using BankingV1._8.Account.Log;
 using BankingV1._8.Account.SavingAccount;
 using BankingV1._8.Menu;
+using BankingV1._8.UserFolder;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -36,7 +37,7 @@ namespace BankingV1._8.Account
             float deposit;
             do
             {
-                Console.WriteLine("Type the amount you want to deposit");
+                Console.WriteLine("\nType the amount you want to deposit");
                 validDeposit = float.TryParse(Console.ReadLine(), out deposit);
             } while (!validDeposit || deposit < 0);
             float previous = account.Balance;
@@ -53,7 +54,7 @@ namespace BankingV1._8.Account
 
             do
             {
-                Console.WriteLine("Type the amount you want to withdraw");
+                Console.WriteLine("\nType the amount you want to withdraw");
                 validWithdrawal = float.TryParse(Console.ReadLine(), out withdrawal);
             } while (!validWithdrawal || withdrawal <= 0);
             if (withdrawal > account.Balance)
@@ -71,10 +72,7 @@ namespace BankingV1._8.Account
             }
         }
 
-        public virtual float MonthEndBalance(Account account)
-        {
-            return account.Balance;
-        }
+        
         public static Account AskAccountNumber()
         {
             bool validAccount;
@@ -90,7 +88,7 @@ namespace BankingV1._8.Account
         public static Account FindAccount(long accountID)
         {
             SqlParameter[] parameters = new SqlParameter[2];
-            parameters[0] = new SqlParameter("@userID", BankMenu.userID);
+            parameters[0] = new SqlParameter("@userID", UserBO.user.UserID);
             parameters[1] = new SqlParameter("@accountID", accountID);
             DataSet res = new AccountDataAccess().SearchAccountByNumber(parameters);
             DataRow acc;
@@ -101,15 +99,15 @@ namespace BankingV1._8.Account
                 switch (Convert.ToInt32(acc["AccountType"]))
                 {
                     case 1:
-                        account = new Current(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(), 
+                        account = new Current(Convert.ToInt32(acc["AccountID"].ToString()), UserBO.user.UserID, acc["AccountAlias"].ToString(), 
                             "Current account", float.Parse(acc["Balance"].ToString()), float.Parse(acc["DepositLimit"].ToString()));
                         break;
                     case 2:
-                        account = new Saving(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(),
+                        account = new Saving(Convert.ToInt32(acc["AccountID"].ToString()), UserBO.user.UserID, acc["AccountAlias"].ToString(),
                             "Saving account", float.Parse(acc["Balance"].ToString()), float.Parse(acc["Interest"].ToString()));
                         break;
                     case 3:
-                        account = new Credit(Convert.ToInt32(acc["AccountID"].ToString()),BankMenu.userID, acc["AccountAlias"].ToString(),
+                        account = new Credit(Convert.ToInt32(acc["AccountID"].ToString()), UserBO.user.UserID, acc["AccountAlias"].ToString(),
                             "Credit account", float.Parse(acc["Balance"].ToString()) , float.Parse(acc["CreditLimit"].ToString()), float.Parse(acc["Interest"].ToString()));
                         break;
                     default:
@@ -140,7 +138,7 @@ namespace BankingV1._8.Account
             try
             {
                 SqlParameter parameter = new SqlParameter();
-                parameter = new SqlParameter("@userID", BankMenu.userID);
+                parameter = new SqlParameter("@userID", UserBO.user.UserID);
                 DataSet res = new AccountDataAccess().SearchAccountByUser(parameter);
 
                 if (res.Tables[0].Rows.Count > 0)
@@ -186,7 +184,7 @@ namespace BankingV1._8.Account
             else
             {
                 SqlParameter[] parameters = new SqlParameter[2];
-                parameters[0] = new SqlParameter("@userID", BankMenu.userID);
+                parameters[0] = new SqlParameter("@userID", UserBO.user.UserID);
                 parameters[1] = new SqlParameter("@accountID", a.AccountID);
 
 

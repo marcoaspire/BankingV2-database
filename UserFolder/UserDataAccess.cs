@@ -61,13 +61,10 @@ namespace BankingV1._8.UserFolder
             {
                 DataSet ds = new DataSet();
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                // Create and initialize the connection using connection string
                 SqlConnection connection = new SqlConnection(connectionString);
-                //Define Command Type
                 SqlCommand cmd = new SqlCommand("select * from [tbl_user] " +
                     "where email = @email and password = @password", connection);
                 cmd.Parameters.AddRange(parameters);
-                // Execute the command
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 connection.Open();
                 //Get the data in disconnected mode
@@ -75,8 +72,9 @@ namespace BankingV1._8.UserFolder
                 connection.Close();
 
                 DataRow user = ds.Tables[0].Rows[0];
-                BankMenu.userID = Convert.ToInt32(user["userID"]);
+                //BankMenu.userID = Convert.ToInt32(user["userID"]);
                 User u = new User(Convert.ToInt32(user["userID"]),user["email"].ToString(), user["password"].ToString(), user["firstName"].ToString(), user["lastName"].ToString());
+                UserBO.user = u;
                 return u;
                 
             }catch (IndexOutOfRangeException)

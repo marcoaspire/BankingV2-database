@@ -4,13 +4,30 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace BankingV1._8.UserFolder
 {
     class UserBO
     {
-        public static bool ValidatePassword(String password)
+        //it´s like a session variable
+        public static User user = null; //change to User class
+
+        static UserBO()
+        {
+            user = new User();
+        }
+
+        
+        public static bool ValidateName(string name)
+        {
+            return (Regex.IsMatch(name, @"^[a-zA-Z]+$") && name.Length>1);
+        }
+
+
+
+        public static bool ValidatePassword(string password)
         {
             if (password.Length < 8 || password.Contains(" ") || !password.Any(char.IsLetterOrDigit) || !password.Any(char.IsDigit)
                  || !password.Any(char.IsLower) || !password.Any(char.IsUpper))
