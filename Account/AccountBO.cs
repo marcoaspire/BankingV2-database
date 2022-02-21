@@ -39,6 +39,8 @@ namespace BankingV1._8.Account
             {
                 Console.WriteLine("\nType the amount you want to deposit");
                 validDeposit = float.TryParse(Console.ReadLine(), out deposit);
+                if (!validDeposit)
+                    Console.WriteLine("Error, try again");
             } while (!validDeposit || deposit < 0);
             float previous = account.Balance;
 
@@ -56,6 +58,8 @@ namespace BankingV1._8.Account
             {
                 Console.WriteLine("\nType the amount you want to withdraw");
                 validWithdrawal = float.TryParse(Console.ReadLine(), out withdrawal);
+                if (!validWithdrawal)
+                    Console.WriteLine("Error, try again");
             } while (!validWithdrawal || withdrawal <= 0);
             if (withdrawal > account.Balance)
             {

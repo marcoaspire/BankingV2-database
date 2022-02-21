@@ -14,17 +14,18 @@ namespace BankingV1._8.UserFolder
     {
         public bool Store(SqlParameter[] parameters)
         {
+            SqlConnection connection = null;
             try
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                SqlConnection connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
                 SqlCommand cmd = new SqlCommand("sp_insertuser", connection);
                 cmd.CommandType = CommandType.StoredProcedure;
                 cmd.Parameters.AddRange(parameters);
                 connection.Open();
                 // Execute the command
                 int res = cmd.ExecuteNonQuery();
-                connection.Close();
+
                 if (res == 0)
                 {
                     Console.WriteLine("Someone already has this email address. Try again, please.\n");
@@ -35,7 +36,7 @@ namespace BankingV1._8.UserFolder
                 }
                 else if (res == 1)
                     return true;
-                
+
                 return false;
             }
             catch (ConfigurationErrorsException e)
@@ -48,20 +49,22 @@ namespace BankingV1._8.UserFolder
             }
             catch (Exception ex)
             {
-                //2601
-                Console.WriteLine(ex.Data.Keys);
                 Console.WriteLine(ex.Message);
+            }
+            finally {
+                connection.Close();
             }
 
             return false;
         }
         public User Search(SqlParameter[] parameters)
         {
+            SqlConnection connection = null;
             try
             {
                 DataSet ds = new DataSet();
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                SqlConnection connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
                 SqlCommand cmd = new SqlCommand("select * from [tbl_user] " +
                     "where email = @email and password = @password", connection);
                 cmd.Parameters.AddRange(parameters);
@@ -69,7 +72,6 @@ namespace BankingV1._8.UserFolder
                 connection.Open();
                 //Get the data in disconnected mode
                 adapter.Fill(ds);
-                connection.Close();
 
                 DataRow user = ds.Tables[0].Rows[0];
                 //BankMenu.userID = Convert.ToInt32(user["userID"]);
@@ -90,16 +92,21 @@ namespace BankingV1._8.UserFolder
             {
                 Console.WriteLine(ex.Message);
             }
+            finally
+            {
+                connection.Close();
+            }
             return null;
         }
         //its not neccesary
         public User SearchByID(SqlParameter parameter)
         {
+            SqlConnection connection = null;
             try
             {
                 DataSet ds = new DataSet();
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                SqlConnection connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
                 SqlCommand cmd = new SqlCommand("select * from [tbl_user] " +
                     "where UserID=@userID", connection);
                 cmd.Parameters.Add(parameter);
@@ -108,7 +115,6 @@ namespace BankingV1._8.UserFolder
                 connection.Open();
                 //Get the data in disconnected mode
                 adapter.Fill(ds);
-                connection.Close();
 
                 DataRow user = ds.Tables[0].Rows[0];
                 User u = new User(Convert.ToInt32(user["userID"]), user["email"].ToString(), user["password"].ToString(), user["firstName"].ToString(), user["lastName"].ToString());
@@ -127,6 +133,9 @@ namespace BankingV1._8.UserFolder
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            finally {
+                connection.Close();
             }
             return null;
         }

@@ -16,10 +16,11 @@ namespace BankingV1._8.Account
         // store values in DB
         public bool Store(SqlParameter[] parameters)
         {
+            SqlConnection connection = null;
             try
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                SqlConnection connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
 
                 /*
                 SqlCommand cmd = new SqlCommand("insert into [account]" +
@@ -32,7 +33,7 @@ namespace BankingV1._8.Account
                 connection.Open();
                 // Execute the command
                 cmd.ExecuteNonQuery();//INSERT, DELETE, UPDATE, and SET
-                connection.Close();
+                
                 return true;
             }
             catch(ConfigurationErrorsException e)
@@ -43,36 +44,53 @@ namespace BankingV1._8.Account
             {
                 Console.WriteLine(ex.Message);
             }
+            finally
+            {
+                connection.Close();
+            }
 
             return false;
         }
         public DataSet GetAllAccountsFromDB()
         {
             DataSet ds = new DataSet();
-            string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-            SqlConnection connection = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand("select * from tbl_Account", connection);
-            SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-            connection.Open();
-            adapter.Fill(ds);
-            connection.Close();
+            SqlConnection connection = null;
+            try
+            {
+                string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
+                connection = new SqlConnection(connectionString);
+                SqlCommand cmd = new SqlCommand("select * from tbl_Account", connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                connection.Open();
+                adapter.Fill(ds);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
             return ds;
+
         }
 
 
         public DataSet SearchAccountByUser(SqlParameter parameter)
         {
             DataSet ds = new DataSet();
+            SqlConnection connection =null ;
             try
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                SqlConnection connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
                 SqlCommand cmd = new SqlCommand("select * from tbl_Account where userId = @userID", connection);
                 cmd.Parameters.Add(parameter);
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 connection.Open();
                 adapter.Fill(ds);
-                connection.Close();
             }
             catch (ConfigurationErrorsException e)
             {
@@ -81,6 +99,10 @@ namespace BankingV1._8.Account
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
             }
             
             return ds;
@@ -88,16 +110,16 @@ namespace BankingV1._8.Account
         public DataSet SearchAccountByNumber(SqlParameter[] parameters)
         {
             DataSet ds = new DataSet();
+            SqlConnection connection = null;
             try
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                SqlConnection connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
                 SqlCommand cmd = new SqlCommand("select * from tbl_Account where userId = @userID and AccountID=@accountID", connection);
                 cmd.Parameters.AddRange(parameters);
                 SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                 connection.Open();
                 adapter.Fill(ds);
-                connection.Close();
             }
             catch (ConfigurationErrorsException e)
             {
@@ -107,16 +129,21 @@ namespace BankingV1._8.Account
             {
                 Console.WriteLine(ex.Message);
             }
+            finally
+            {
+                connection.Close();
+            }
            
             return ds;
         }
 
         public bool Update(SqlParameter[] parameters)
         {
+            SqlConnection connection = null;
             try
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                SqlConnection connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
 
             /*
                 SqlCommand cmd = new SqlCommand("UPDATE account set " +
@@ -128,7 +155,6 @@ namespace BankingV1._8.Account
                 cmd.Parameters.AddRange(parameters);
                 connection.Open();
                 int res=cmd.ExecuteNonQuery();//INSERT, DELETE, UPDATE
-                connection.Close();
                 if (res > 0)
                     return true;
                 else
@@ -141,6 +167,10 @@ namespace BankingV1._8.Account
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
             }
             return false;
             
@@ -148,10 +178,11 @@ namespace BankingV1._8.Account
 
         public bool Destroy(SqlParameter[] parameters)
         {
+            SqlConnection connection = null;
             try
             {
                 string connectionString = ConfigurationManager.ConnectionStrings["BankingConnection"].ConnectionString;
-                SqlConnection connection = new SqlConnection(connectionString);
+                connection = new SqlConnection(connectionString);
 
                 //SqlCommand cmd = new SqlCommand("DELETE from account where UserID=@userID and AccountID=@accountID", connection);
                 SqlCommand cmd = new SqlCommand("sp_deleteaccount", connection);
@@ -159,7 +190,6 @@ namespace BankingV1._8.Account
                 cmd.Parameters.AddRange(parameters);
                 connection.Open();
                 int res = cmd.ExecuteNonQuery();//INSERT, DELETE, UPDATE, and SET
-                connection.Close();
                 if (res > 0)
                     return true;
                 else
@@ -172,6 +202,10 @@ namespace BankingV1._8.Account
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                connection.Close();
             }
             return false;
         }
