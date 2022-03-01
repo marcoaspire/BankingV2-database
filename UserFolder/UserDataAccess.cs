@@ -12,7 +12,7 @@ namespace BankingV1._8.UserFolder
 {
     class UserDataAccess
     {
-        public bool Store(SqlParameter[] parameters)
+        public bool Store(List<SqlParameter> parameters)
         {
             SqlConnection connection = null;
             try
@@ -21,7 +21,7 @@ namespace BankingV1._8.UserFolder
                 connection = new SqlConnection(connectionString);
                 SqlCommand cmd = new SqlCommand("sp_insertuser", connection);
                 cmd.CommandType = CommandType.StoredProcedure;
-                cmd.Parameters.AddRange(parameters);
+                cmd.Parameters.AddRange(parameters.ToArray());
                 connection.Open();
                 // Execute the command
                 int res = cmd.ExecuteNonQuery();
@@ -74,7 +74,6 @@ namespace BankingV1._8.UserFolder
                 adapter.Fill(ds);
 
                 DataRow user = ds.Tables[0].Rows[0];
-                //BankMenu.userID = Convert.ToInt32(user["userID"]);
                 User u = new User(Convert.ToInt32(user["userID"]),user["email"].ToString(), user["password"].ToString(), user["firstName"].ToString(), user["lastName"].ToString());
                 UserBO.user = u;
                 return u;

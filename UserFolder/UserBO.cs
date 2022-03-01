@@ -12,7 +12,7 @@ namespace BankingV1._8.UserFolder
     class UserBO
     {
         //it´s like a session variable
-        public static User user = null; //change to User class
+        public static User user = null;
 
         static UserBO()
         {
@@ -36,13 +36,12 @@ namespace BankingV1._8.UserFolder
         }
         public bool AddUser(User u)
         {
-
-            SqlParameter[] parameter = new SqlParameter[5];
-            parameter[0] = new SqlParameter("@email",  u.Email);
-            parameter[1] = new SqlParameter("@password", u.Password);
-            parameter[2] = new SqlParameter("@firstname", u.FirstName);
-            parameter[3] = new SqlParameter("@lastname", u.LastName);
-            parameter[4] = new SqlParameter("@res", -1);
+            List<SqlParameter> parameter = new List<SqlParameter>();
+            parameter.Add(new SqlParameter("@email", u.Email));
+            parameter.Add(new SqlParameter("@password", u.Password));
+            parameter.Add(new SqlParameter("@firstname", u.FirstName));
+            parameter.Add(new SqlParameter("@lastname", u.LastName));
+            parameter.Add(new SqlParameter("@res", -1));
             bool res = new UserDataAccess().Store(parameter);
             return res;
         }

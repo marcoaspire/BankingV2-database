@@ -274,7 +274,7 @@ namespace BankingV1._8.Menu
                                     }
                                     else
                                     {
-                                        Console.WriteLine("tipo mal");
+                                        Console.WriteLine("wrong kind of account");
                                     }
                                     break;
                                 case 4:
@@ -300,10 +300,6 @@ namespace BankingV1._8.Menu
                                     break;
                             }
 
-                        }
-                        else
-                        {
-                            Console.WriteLine("We couldn’t find account with that number");
                         }
                         break;
                     case '3':

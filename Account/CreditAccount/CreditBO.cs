@@ -33,7 +33,6 @@ namespace BankingV1._8.Account.CreditAccount
                 }
                 else
                 {
-                    Console.WriteLine("credito anterior: " + availableCredit);
                     Operation operation = new Operation("Pay with credit", account, withdrawal);
                     account.Balance += withdrawal;
                     UpdateAccount(account, operation);
